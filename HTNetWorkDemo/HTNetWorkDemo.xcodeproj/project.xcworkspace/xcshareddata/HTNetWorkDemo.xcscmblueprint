@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "BC4677122F458711ED6B5404300FDE7CDB5EE54F",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "5E53549698484D01692BE9C9C40765743891289F" : 0,
+    "BC4677122F458711ED6B5404300FDE7CDB5EE54F" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "2A50DF26-A379-4561-8C29-FF9379AAC38E",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "5E53549698484D01692BE9C9C40765743891289F" : "",
+    "BC4677122F458711ED6B5404300FDE7CDB5EE54F" : "HTNetWork\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "HTNetWorkDemo",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "HTNetWorkDemo\/HTNetWorkDemo.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/horaetech\/GitHub.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "5E53549698484D01692BE9C9C40765743891289F"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/horaetech\/HTNetWork.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "BC4677122F458711ED6B5404300FDE7CDB5EE54F"
+    }
+  ]
+}

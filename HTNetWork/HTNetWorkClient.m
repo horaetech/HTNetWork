@@ -28,6 +28,9 @@
     
     _bacthRequestCount = 1;
     _batchResponse = nil;
+    _defaultCheckMessage = YES;
+    _defaultUseCache = YES;
+    _batchRequest = [[NSMutableDictionary alloc]init];
     
     return self;
 }
@@ -42,28 +45,40 @@
     }
     
     if (request.methodType ==RequestMethod_Get) {
-        [_requestManager GET:[request.url absoluteString] parameters:nil  progress:nil
+        NSURLSessionDataTask *task =[_requestManager GET:[request.url absoluteString] parameters:nil  progress:nil
                      success:^(NSURLSessionTask *task, id responseObject) {
+                         HTRequest *curRequest = [self getCurrentRequest:task];
                          [self onResponseWithFinishBlock:nil withErrorBlock:nil
-                                      withResponseObject:responseObject withRequest:request];
+                                      withResponseObject:responseObject withRequest:curRequest];
+                         [self removeCurrentRequest:task];
                          
                      } failure:^(NSURLSessionTask *operation, NSError *error) {
-                         [self onErrorwithBlock:nil withRequest:request];
+                         HTRequest *curRequest = [self getCurrentRequest:task];
+                         [self onErrorwithBlock:nil withRequest:curRequest];
+                         [self removeCurrentRequest:task];
                      }];
+        [self addCurrentRequest:request withTask:task];
+        
     }else if(request.methodType ==RequestMethod_Post){
-        [_requestManager POST:[request.url absoluteString] parameters:request.parameters
+        NSURLSessionDataTask *task =[_requestManager POST:[request.url absoluteString] parameters:request.parameters
                       progress:^(NSProgress *progress){
                           if ([self.delegate respondsToSelector:@selector(requestProgress:withTag:)]){
                               [self.delegate requestProgress:progress withTag:request.tag];
                           }
                       } success:^(NSURLSessionTask *task, id responseObject) {
+                          HTRequest *curRequest = [self getCurrentRequest:task];
                           [self onResponseWithFinishBlock:nil withErrorBlock:nil
-                                       withResponseObject:responseObject withRequest:request];
+                                       withResponseObject:responseObject withRequest:curRequest];
+                          [self removeCurrentRequest:task];
                           
                       } failure:^(NSURLSessionTask *operation, NSError *error) {
-                          [self onErrorwithBlock:nil withRequest:request];
+                          HTRequest *curRequest = [self getCurrentRequest:task];
+                          [self onErrorwithBlock:nil withRequest:curRequest];
+                          [self removeCurrentRequest:task];
                       }];
+        [self addCurrentRequest:request withTask:task];
     }
+    
     
 }
 
@@ -72,31 +87,39 @@
                      onResponse:(HITResponseObject)responseBlock
                         onError:(HITResponseError)errorBlock{
     if (request.methodType ==RequestMethod_Get) {
-        [_requestManager GET:[request.url absoluteString] parameters:nil
+        NSURLSessionDataTask *task = [_requestManager GET:[request.url absoluteString] parameters:nil
                     progress:^(NSProgress *progress){
                         if (progressBlock) {
                             progressBlock(progress,request.tag);
                         }
                     } success:^(NSURLSessionTask *task, id responseObject) {
-                         
-                         [self onResponseWithFinishBlock:responseBlock withErrorBlock:errorBlock withResponseObject:responseObject withRequest:request];
+                         HTRequest *curRequest = [self getCurrentRequest:task];
+                         [self onResponseWithFinishBlock:responseBlock withErrorBlock:errorBlock withResponseObject:responseObject withRequest:curRequest];
+                        [self removeCurrentRequest:task];
                          
                     } failure:^(NSURLSessionTask *operation, NSError *error) {
-                         [self onErrorwithBlock:errorBlock withRequest:request];
+                        HTRequest *curRequest = [self getCurrentRequest:task];
+                        [self onErrorwithBlock:errorBlock withRequest:curRequest];
+                        [self removeCurrentRequest:task];
                     }];
+        [self addCurrentRequest:request withTask:task];
     }else if(request.methodType ==RequestMethod_Post){
-        [_requestManager POST:[request.url absoluteString] parameters:request.parameters
+        NSURLSessionDataTask *task = [_requestManager POST:[request.url absoluteString] parameters:request.parameters
                       progress:^(NSProgress *progress){
                           if (progressBlock) {
                               progressBlock(progress,request.tag);
                           }
                       } success:^(NSURLSessionTask *task, id responseObject) {
-                          
-                          [self onResponseWithFinishBlock:responseBlock withErrorBlock:errorBlock withResponseObject:responseObject withRequest:request];
+                          HTRequest *curRequest = [self getCurrentRequest:task];
+                          [self onResponseWithFinishBlock:responseBlock withErrorBlock:errorBlock withResponseObject:responseObject withRequest:curRequest];
+                          [self removeCurrentRequest:task];
                           
                       } failure:^(NSURLSessionTask *operation, NSError *error) {
-                          [self onErrorwithBlock:errorBlock withRequest:request];
+                          HTRequest *curRequest = [self getCurrentRequest:task];
+                          [self onErrorwithBlock:errorBlock withRequest:curRequest];
+                          [self removeCurrentRequest:task];
                       }];
+        [self addCurrentRequest:request withTask:task];
     }
 }
 
@@ -300,7 +323,7 @@
         return nil;
 
     }else if (self.defaultCheckMessage){
-        return [self getJsonStr:jsonStr withError:dataError];
+        return [self getJsonDataWithString:jsonStr withError:dataError];
     }else{
         return jsonStr;
     }
@@ -329,6 +352,18 @@
     }else{
         return [jsonDic objectForKey:@"data"];
     }
+}
+
+- (HTRequest *)getCurrentRequest:(NSURLSessionTask *)task{
+    return [_batchRequest objectForKey:[NSString stringWithFormat: @"%lu", (unsigned long)task.taskIdentifier]];
+}
+
+- (void)addCurrentRequest:(HTRequest *)request withTask:(NSURLSessionTask *)task{
+    [_batchRequest setObject:(id)request forKey:[NSString stringWithFormat: @"%lu", (unsigned long)task.taskIdentifier]];
+}
+
+- (void)removeCurrentRequest:(NSURLSessionTask *)task{
+    [_batchRequest removeObjectForKey:[NSString stringWithFormat: @"%lu", (unsigned long)task.taskIdentifier]];
 }
 
 

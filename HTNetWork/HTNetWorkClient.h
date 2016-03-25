@@ -38,6 +38,7 @@ typedef void (^HITResponseError)(HTNetWorkError* responseError);
     AFHTTPSessionManager *_requestManager;
     NSInteger _bacthRequestCount;
     HTResponse *_batchResponse;
+    NSMutableDictionary *_batchRequest;
 }
 
 @property (nonatomic,weak) id<HTRequestDelegate> delegate;

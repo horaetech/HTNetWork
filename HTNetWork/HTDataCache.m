@@ -30,7 +30,9 @@
 }
 
 - (void)cacheDataWithUrl:(NSString *)url withData:(id)jsonData{
-    [_cache setObject:jsonData forKey:url];
+    if (jsonData) {
+        [_cache setObject:jsonData forKey:url];
+    }
 }
 
 - (id)getCacheDataWithUrl:(NSString *)url{

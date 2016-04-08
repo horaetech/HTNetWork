@@ -268,9 +268,12 @@
         
         if(!_batchResponse){
             _batchResponse = [HTResponse shareResponseWithObject:data];
-        }else{
+        }
+        
+        if (data) {
             [_batchResponse setObject:data withKey:request.tag];
         }
+        
         _bacthRequestCount --;
         if (_bacthRequestCount >0) {
             return;
